@@ -1,0 +1,39 @@
+{
+  "name": "teamdev.esri.angularjs",
+  "authors": [
+    "TeamDev <info@teamdev.it>",
+    "Paolo Possanzini<paolo@teamdev.it>",
+    "Enrico Sodacci<e.sodacci@teamdev.it>"
+  ],
+  "description": "AngularJS Module for ESRI Maps",
+  "main": "js/teamdev.esri.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "angularjs",
+    "esri",
+    "maps"
+  ],
+  "license": "Apache License 2.0",
+  "homepage": "www.teamdev.it",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "*"
+  },
+  "_release": "002962a1a5",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "002962a1a52b75696b5f298f60afbec6be218c25"
+  },
+  "_source": "git://github.com/TeamDev-it/teamdev-esri-angularjs.git",
+  "_target": "*",
+  "_originalSource": "teamdev-esri-angularjs"
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title></title>
+  <link rel="stylesheet" href="http://js.arcgis.com/3.14/esri/css/esri.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+  <link rel="stylesheet" href="../css/teamdev.esri.css">
+  <script src="http://js.arcgis.com/3.14/"></script>
+  <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+  <script src="../js/teamdev.esri.js"></script>
+</head>
+<body ng-app="MapApp" ng-controller="myController">
+  <div id="search"></div>
+
+  <esri-map base-map="osm" map-id="map" map-center="[12.8, 42.9]" zoom="10" on-extent-change="extentChange">
+    <search target="search">
+    </search>
+
+    <graphics-layer layer-id="p">
+      <point ng-repeat="photo in photos" latitude="photo.latitude" longitude="photo.longitude" extra="photo">
+        <simple-text-symbol font-family="'FontAwesome'" font-size="24" text="&#xf030;">
+        </simple-text-symbol>
+        <picture-marker-symbol symbol-url="{{photo.url_t}}" symbol-height="25" symbol-width="25">
+        </picture-marker-symbol>
+      </point>
+      <info-window>
+        <div>
+          <h4>{{$g.extra.title}}</h4>
+          <img ng-src="{{$g.extra.url_l}}" height="400" />
+        </div>
+      </info-window>
+      
+    </graphics-layer>
+  </esri-map>
+
+  <script>
+    angular.module("MapApp")
+    .controller("myController", function ($scope, esriRegistry, $http) {
+
+      $scope.photos = [];
+      $scope.extentChange = function (e, map) {
+
+        require(["esri/geometry/webMercatorUtils"], function (uu) {
+          var r = uu.webMercatorToGeographic(e.extent.getCenter());
+          $http.get(" https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=5ca7c69a6a00372af493b84d56a8b63f&tags=%2A&privacy_filter=1&accuracy=1&content_type=1&lat=" + r.y + "&lon=" + r.x + "&radius=20&format=json&nojsoncallback=1&has_geo=1&extras=geo,url_l, url_t")
+          .success(function (p) {
+            $scope.photos = p.photos.photo;
+          });
+        });
+      };
+    })
+
+  </script>
+</body>
+</html>

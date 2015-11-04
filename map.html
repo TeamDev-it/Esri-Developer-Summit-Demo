@@ -1,0 +1,92 @@
+﻿<esri-map base-map="{{basemap}}" map-id="map"
+          map-center="[13.3714665,52.5032511]"
+          zoom="12"
+          auto-resize="true"
+          on-map-ready="mapReady"
+          on-extent-change="extentChange"
+          on-click="mapClick">
+
+  <search target="search">
+  </search>
+
+  <!-- bus stops -->
+  <!--<feature-layer layer-id="bus" url="http://atlasmaps.esri.com/arcgis/rest/services/Esri/Transit_Access/MapServer/1"
+                 mode="MODE_AUTO" out-fields="stop_name,stop_url">
+    <tooltip>
+      <div class="map-tip">{{$g.attributes.stop_name}}</div>
+    </tooltip>
+    <simple-text-symbol font-family="Material Icons" font-size="16" text="&#xE530;" text-color="#2EAA56">
+    </simple-text-symbol>
+    <info-window>
+      <div style="min-width:400px;">
+        <h3>{{$g.attributes.stop_name}}</h3>
+        <a ng-href="{{$g.attributes.stop_url}}" ng-if="$g.attributes.stop_url" class="btn btn-info" target="info">Go to website</a>
+      </div>
+    </info-window>
+  </feature-layer>-->
+  <!-- Esri does not support creating a composite symbol from svg ang png in the same time
+       so we have to create 2 graphics layer for results. -->
+
+
+  <graphics-layer layer-id="g">
+    <circle longitude="selectedPoint.lng" latitude="selectedPoint.lat" radius="300" ng-if="selectedPoint">
+      <simple-fill-symbol symbol-color="rgba(200,0,0,0.2)" symbol-style="STYLE_SOLID">
+        <simple-line-symbol symbol-color="#555" symbol-style="STYLE_SHORTDASH" symbol-width="1">
+        </simple-line-symbol>
+      </simple-fill-symbol>
+    </circle>
+    <poly-line json="route" deep-watch="true">
+      <simple-line-symbol symbol-color="#FF6C00" symbol-style="STYLE_DASHDOT" symbol-width="3"></simple-line-symbol>
+    </poly-line>
+    <point ng-repeat="v in route.paths[0]" latitude="v[1]" longitude="v[0]">
+      <simple-marker-symbol symbol-style="STYLE_CIRCLE" color="#007CFF" size="15">
+      </simple-marker-symbol>
+    </point>
+  </graphics-layer>
+
+  <graphics-layer layer-id="fsquare_back">
+    <point ng-repeat="v in venues" latitude="v.location.lat" longitude="v.location.lng">
+      <simple-marker-symbol symbol-style="STYLE_CIRCLE" color="#f00" size="30">
+      </simple-marker-symbol>
+    </point>
+  </graphics-layer>
+
+  <graphics-layer layer-id="fsquare_venues">
+    <point ng-repeat="v in venues" latitude="v.location.lat" longitude="v.location.lng" extra="v">
+      <picture-marker-symbol symbol-url="{{v.categories[0].icon.prefix}}32{{v.categories[0].icon.suffix}}" symbol-height="24" symbol-width="24">
+      </picture-marker-symbol>
+    </point>
+
+    <info-window on-selection-changed="showDetail">
+      <div class="venue">
+        <div class="panel clearfix" style="min-width:400px;">
+          <div class="col-xs-9">
+            <span class="title">{{$g.extra.name}}</span>
+            <address>
+              {{$g.extra.location.address}}, {{$g.extra.location.crossStreet}}<br>
+              {{$g.extra.location.city}}, {{$g.extra.location.cc}} {{$g.extra.location.postalCode}}<br>
+              {{$g.extra.location.country}}<br />
+            </address>
+          </div>
+          <div class="col-xs-3 no-padding">
+            <a class="addTour btn text-primary" ng-href="{{$g.extra.url}}" target="info">
+              <i class="material-icons">library_books</i>
+              Website
+            </a>
+          </div> 
+        </div>
+      </div>
+    </info-window>
+  </graphics-layer>
+
+
+</esri-map>
+
+<div id="search"></div>
+
+<div class="tour-steps" ng-if="tour.length > 0">
+  <div class="step" ng-repeat="t in tour track by $index" ng-click="selectStep(tour[$index])"
+      >
+    <i class="material-icons">directions_walk</i>
+  </div>
+</div>

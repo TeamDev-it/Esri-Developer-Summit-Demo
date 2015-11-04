@@ -1,0 +1,54 @@
+﻿<!-- Layers -->
+<div class="panel panel-default">
+  <div class="panel-heading">
+    Search in Four Square
+  </div>
+  <div class="panel-body">
+    <form name="search" ng-init="filter.selected=[]">
+      <ul>
+        <li ng-repeat="c in categories">
+          <input type="checkbox" name="categories" ng-model="filter.selected[c.id]" value="{{c.id}}" />{{c.name}}
+        </li>
+      </ul>
+      <button ng-click="doSearch(filter)">Search</button>
+    </form>
+  </div>
+
+</div>
+
+<div ng-if="venues_detail">
+  <div class="panel " style="min-width:300px;">
+    <h3>{{venues_detail.name}}</h3>
+
+    <div class="row"
+         ng-style="background-image:url({{venues_detail.bestPhoto.prefix}}{{venues_detail.bestPhoto.width}}x{{venues_detail.bestPhoto.height}}{{venues_detail.bestPhoto.suffix}})">
+      <div class="col-xs-6">
+        <address>
+          <strong>{{venues_detail.name}}</strong><br>
+          {{venues_detail.location.address}}, {{venues_detail.location.crossStreet}}<br>
+          {{venues_detail.location.city}}, {{venues_detail.location.cc}} {{venues_detail.location.postalCode}}<br>
+          {{venues_detail.location.country}}<br />
+        </address>
+      </div>
+      <div class="col-xs-6">
+        <address>
+          <a ng-href="{{venues_detail.url}}" target="info"><i class="fa fa-globe"></i> Visit the webste</a>
+        </address>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btn-success">
+          <i class="fa fa-plus"></i>
+          Add this place to my tour
+        </button>
+      </div>
+    </div>
+    <div ng-repeat="p in venues_detail.photos.groups[0].items" class="relative" style="width:90%; margin-bottom:5px;">
+      <img ng-src="{{p.prefix}}{{p.width}}x{{p.height}}{{p.suffix}}" width="100%" class="img-rounded" />
+      <div class="row">
+
+      </div>
+    </div>
+  </div>
+</div>

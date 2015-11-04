@@ -1,0 +1,30 @@
+﻿<div class="venue">
+  <div class="panel clearfix" style="min-width:400px;">
+    <div class="col-xs-8">
+      <span class="title">{{venues_detail.name}}</span>
+      <address>
+        {{venues_detail.location.address}}, {{venues_detail.location.crossStreet}}<br>
+        {{venues_detail.location.city}}, {{venues_detail.location.cc}} {{venues_detail.location.postalCode}}<br>
+        {{venues_detail.location.country}}<br />
+      </address>
+    </div>
+    <div class="col-xs-2 no-padding ">
+      <a class="addTour btn text-primary" ng-href="{{venues_detail.url}}" target="info">
+        <i class="material-icons">library_books</i>
+        Website
+      </a>
+    </div>
+    <div class="col-xs-2 no-padding " ng-if="tour.indexOf(venues_detail)<0">
+      <button class="addTour btn text-primary" ng-click="addTour(venues_detail)">
+        <i class="material-icons">local_activity</i>
+        Add Location
+      </button>
+    </div>
+    <div class="col-xs-2 no-padding " ng-if="tour.indexOf(venues_detail)>=0">
+      <button class="addTour btn text-primary" ng-click="selectStep(venues_detail, true)">
+        <i class="material-icons">pin_drop</i>
+        Show Location
+      </button>
+    </div>
+  </div>
+</div>

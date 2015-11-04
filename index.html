@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <title>Berlin Explorer</title>
+  <link rel="stylesheet" href="http://js.arcgis.com/3.14/esri/css/esri.css">
+  <link href='https://fonts.googleapis.com/css?family=Roboto:500' rel='stylesheet' type='text/css'>
+  <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+  <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="bower_components/teamdev.esri.angularjs/css/teamdev.esri.css" rel="stylesheet" />
+  <link href="site.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+  <script src="http://js.arcgis.com/3.14/"></script>
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <script src="bower_components/angular/angular.min.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+
+  <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+
+  <script src="bower_components/teamdev.esri.angularjs/js/teamdev.esri.js"></script>
+  <script src="fourSquareService.js"></script>
+
+</head>
+<body ng-app="myApp" ng-controller="myController" ng-init="basemap='topo'">
+  <div class="container-fluid full-height ">
+    <div class="row full-height">
+      <div class="col-xs-12 full-height relative overflow-hide no-padding"
+           ng-include="'map.html'">
+
+      </div>
+      <ng-include src="'basemap_widget.html'"></ng-include>
+      <ng-include src="'foursquare_widget.html'"></ng-include>
+      <ng-include src="'info_widget.html'"></ng-include>
+      <ng-include src="'my_tour.html'"></ng-include>
+    </div>
+  </div>
+  <script>
+    angular.module("myApp", ["teamdev.esri", "4square", "ui.bootstrap", "ngAnimate"])
+      .controller("myController", function ($scope, esriRegistry, $http, venuesService, $filter, $timeout) {
+
+        $scope.tour = [];
+        $scope.venues = [];
+        $scope.categories = []
+        $scope.selectedPoint = {};
+        $scope.route = {
+          paths: [[]],
+          spatialReference: { "wkid": 4326 }
+        };
+
+        function fourSquareTools() {
+          // Read categories from fourSquare.
+          venuesService.getCategories().then(function (r) {
+            $scope.categories = r;
+          });
+
+          // Do search in fourSquare
+          $scope.doSearch = function (v) {
+            // get the Esri map object
+            var map = esriRegistry.get("map");
+
+            // Use Esri services to convert coordinates from WebMercatore to WGS84
+            require(["esri/geometry/webMercatorUtils"], function (uu) {
+              var r = uu.webMercatorToGeographic(map.extent.getCenter());
+              venuesService.search(r.y, r.x, v).then(function (r) {
+                $scope.venues = r;
+              });
+            });
+          };
+
+          $scope.showDetail = function (g) {
+            $scope.showDetailById(g.extra.id);
+          }
+
+          $scope.showDetailById = function (id) {
+            venuesService.get(id).then(function (r) {
+
+              $scope.venues_detail = null;
+              /// Tip for carousel
+              $timeout(function () {
+                $scope.venues_detail = r;
+              }, 1000);
+            });
+          }
+        } fourSquareTools()
+
+        function tourTools() {
+
+          $scope.addTour = function (p) {
+            $scope.tour.push(p);
+            $scope.route.paths[0].push([p.location.lng, p.location.lat]);
+          };
+
+          $scope.selectStep = function (p, hideDetails) {
+            if (hideDetails !== true)
+              $scope.showDetailById(p.id);
+
+            $scope.selectedPoint = p.location;
+
+            var map = esriRegistry.get("map");
+            require(["esri/geometry/Point"], function (Point) {
+              map.centerAndZoom(new Point(p.location.lng, p.location.lat), 14);
+            });
+          }
+
+        } tourTools()
+
+      })
+      .constant("FSquareAppId", "PUKOPHZWV0TFKHHQP3DRP15WSEGJJV1CG04NCLEMEWGW5X3F")
+      .constant("FSquareAppSecret", "L3TWCX34UTJWNOFQA45HTGUYXVP5CCAZ5S1KBPRTDXHYPT3R")
+  </script>
+</body>
+</html>

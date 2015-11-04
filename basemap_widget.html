@@ -1,0 +1,16 @@
+﻿<div class="basemaps" ng-init="basemapWidget_open=false;" ng-class="{open: basemapWidget_open}">
+  <div class="title">
+    Select your map
+  </div>
+  <button class="leaf btn btn-success btn-sm"><i class="fa fa-globe" style="font-size:2em;" ng-click="basemapWidget_open = !basemapWidget_open"></i> </button>
+  <div class="background"></div>
+  <img class="img-rounded" src="bower_components/teamdev.esri.angularjs/samples/basemaps/DGCanvasBase.png" ng-click="$parent.basemap='dark-gray'" />
+  <img class="img-rounded" src="bower_components/teamdev.esri.angularjs/samples/basemaps/imagery_labels.jpg" ng-click="$parent.basemap='hybrid'" />
+  <img class="img-rounded" src="bower_components/teamdev.esri.angularjs/samples/basemaps/light_gray_canvas.jpg" ng-click="$parent.basemap='gray'" />
+  <img class="img-rounded" src="bower_components/teamdev.esri.angularjs/samples/basemaps/natgeo.jpg" ng-click="$parent.basemap ='national-geographic' " />
+  <img class="img-rounded" src="bower_components/teamdev.esri.angularjs/samples/basemaps/open_street_map.jpg" ng-click="$parent.basemap ='osm' " />
+  <img class="img-rounded" src="bower_components/teamdev.esri.angularjs/samples/basemaps/tempimagery.jpg" ng-click="$parent.basemap ='satellite' " />
+  <img class="img-rounded" src="bower_components/teamdev.esri.angularjs/samples/basemaps/terrain_labels.jpg" ng-click="$parent.basemap ='terrain' " />
+  <img class="img-rounded" src="bower_components/teamdev.esri.angularjs/samples/basemaps/topo_map_2.jpg" ng-click="$parent.basemap ='topo' " />
+  <img class="img-rounded" src="bower_components/teamdev.esri.angularjs/samples/basemaps/world_street_map.jpg" ng-click="$parent.basemap ='streets' " />
+</div>

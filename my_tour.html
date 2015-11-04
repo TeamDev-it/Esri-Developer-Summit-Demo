@@ -1,0 +1,19 @@
+﻿<div class="tour-info" ng-init="tourinfo_open=false;" ng-class="{open: tourinfo_open}">
+
+  <button class="leaf btn btn-primary btn-sm"><i class="fa fa-list-ul" style="font-size:2em;" ng-click="tourinfo_open = !tourinfo_open"></i> </button>
+  <div class="background"></div>
+  <div class="body">
+    <div class="title">
+      My Tour
+    </div>
+    <div>
+      <blockquote ng-if="tour.length ===0">
+        <p>You does not have any destination in your tour.</p>
+        <footer>Select a location and click <cite title="Add Location">Add Location</cite> button</footer>
+      </blockquote>
+      <div ng-repeat="venues_detail in tour">
+        <ng-include src="'venues_tooltip.html'"></ng-include>
+      </div>
+    </div>
+  </div>
+</div>

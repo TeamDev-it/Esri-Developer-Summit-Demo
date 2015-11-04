@@ -1,0 +1,21 @@
+﻿<div class="info-widget" ng-init="infoWidget_open=true;" ng-class="{open: infoWidget_open}" ng-if="venues_detail">
+  <button class="leaf btn btn-primary btn-sm"><i class="fa fa-info" style="font-size:2em;" ng-click="infoWidget_open = !infoWidget_open"></i> </button>
+  <div class="background"></div>
+  <div class="body">
+    <div class="title">
+      Details about :
+    </div>
+    <div>
+      <div class="panel " style="min-width:300px; max-height:150px;" ng-include="'venues_tooltip.html'">
+      </div>
+      <div class="photos">
+        <uib-carousel interval="5000" no-wrap="false" ng-if="venues_detail.photos">
+          <uib-slide ng-repeat="p in venues_detail.photos.groups[0].items" active="slide.active">
+            <!--<img ng-src="{{p.prefix}}{{p.width}}x{{p.height}}{{p.suffix}}" style="margin:auto;" width="100%">-->
+            <div class="img" style="background-image:url({{p.prefix}}{{p.width}}x{{p.height}}{{p.suffix}})"></div>
+          </uib-slide>
+        </uib-carousel>
+      </div>
+    </div>
+  </div>
+</div>

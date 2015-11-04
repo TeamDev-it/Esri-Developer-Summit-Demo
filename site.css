@@ -1,0 +1,479 @@
+﻿/* 
+  --------------------------------------------------------------------------
+  Base classes 
+  --------------------------------------------------------------------------
+*/
+body {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
+}
+
+.full-height {
+  height: calc(100%);
+  top: 0;
+  bottom: 0;
+  position: relative;
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.padding-5 {
+  padding: 5px;
+}
+
+.absolute {
+  position: absolute;
+}
+
+.relative {
+  position: relative;
+}
+
+/*
+  -------------------------------------------------------------------------- 
+  Map tool classes 
+  --------------------------------------------------------------------------
+*/
+
+
+
+
+
+.esriSimpleSliderTL {
+  bottom: 20px;
+  /* right: 20px; */
+  left: 20px;
+  top: initial;
+}
+
+#search {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  width: 290px;
+  margin-left: -145px;
+}
+
+.overflow-hide {
+  overflow: hidden;
+}
+
+.map-tip {
+  padding: 10px;
+  background-color: rgba(0,0,0,0.5);
+  color: #fff;
+  border-radius: 3px;
+  z-index: 30 !important;
+}
+
+
+
+path[stroke="rgb(0, 255, 255)"] {
+  stroke: none;
+}
+
+.esriPopup .titlePane {
+  visibility: hidden;
+}
+
+.esriPopup .contentPane {
+  overflow: initial;
+  padding: 5px;
+}
+
+.esriPopup .sizer {
+  display: none;
+}
+
+  .esriPopup .sizer.content {
+    display: block;
+  }
+
+
+/* 
+  --------------------------------------------------------------------------
+  Tour Classes 
+  --------------------------------------------------------------------------
+*/
+
+.tour-steps {
+  position: absolute;
+  padding-top: 10px;
+  bottom: 10px;
+  height: 90px;
+  z-index: 100;
+  width: calc(100% - 200px);
+  background-color: rgba(0,0,0,0.8);
+  display: flex;
+  right: 80px;
+  left: 80px;
+  /* border-radius: 10px; */
+}
+
+.step:last-child:before {
+  content: none;
+}
+
+.step:last-child {
+  width: 60px;
+}
+
+.step {
+  color: white;
+}
+
+  .step, .step * {
+    font-size: 50px !important;
+    position: relative;
+    width: 100%;
+    cursor: pointer;
+  }
+
+    .step:hover, step:hover * {
+      color: lightgreen !important;
+    }
+
+    .step:after, .step:before {
+      content: "";
+      position: absolute;
+    }
+
+    .step:before {
+      min-width: 10px;
+      width: calc(100% );
+      height: 6px;
+      background-color: white;
+      border: 2px solid black;
+      top: 62px;
+      left: 25px;
+    }
+
+    .step:after {
+      top: 55px;
+      left: 15px;
+      width: 20px;
+      height: 20px;
+      background-color: white;
+      border: 2px solid black;
+      border-radius: 50%;
+    }
+
+/*
+  --------------------------------------------------------------------------
+  Basemap widget classes
+  --------------------------------------------------------------------------
+ */
+
+@keyframes open-left {
+  from {
+    left: -325px;
+  }
+
+  to {
+    left: 20px;
+  }
+}
+
+@keyframes open-big-left {
+  from {
+    left: -450px;
+  }
+
+  to {
+    left: 20px;
+  }
+}
+
+@keyframes open-right {
+  from {
+    right: -450px;
+  }
+
+  to {
+    right: 20px;
+  }
+}
+
+@keyframes close-right {
+  from {
+    right: 20px;
+  }
+
+  to {
+    right: -450px;
+  }
+}
+
+@keyframes close-left {
+  from {
+    left: 20px;
+  }
+
+  to {
+    left: -325px;
+  }
+}
+
+@keyframes close-big-left {
+  from {
+    left: 20px;
+  }
+
+  to {
+    left: -450px;
+  }
+}
+.basemaps,
+.fourquare-search {
+  position: absolute;
+  left: -330px;
+  width: 330px;
+  animation-name: close-left;
+  animation-duration: 1s;
+  padding: 5px;
+}
+
+.basemaps {
+  bottom: 100px;
+}
+
+.fourquare-search {
+  top: 20px;
+}
+
+  .basemaps.open,
+  .fourquare-search.open {
+    left: 20px;
+    animation-name: open-left;
+    animation-duration: 1s;
+  }
+
+  .basemaps .background,
+  .fourquare-search .background {
+    position: absolute;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid #2A349C;
+    box-shadow: 1px 1px 5px #333;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .basemaps img,
+  .fourquare-search img {
+    position: relative;
+    width: 100px;
+    float: left;
+    margin: 3px;
+    z-index: 3;
+    cursor: pointer;
+  }
+
+
+  .basemaps button.leaf,
+  .fourquare-search button.leaf {
+    position: absolute;
+    top: 20px;
+    right: -42px;
+    z-index: 1;
+    border-radius: 0;
+    box-shadow: 1px 1px 2px #333;
+    width: 42px;
+  }
+
+  .basemaps .title,
+  .fourquare-search .title {
+    color: white;
+    line-height: 30px;
+    margin: -4px;
+    margin-bottom: 4px;
+    font-weight: bold;
+    font-family: inherit;
+    text-align: right;
+    padding-right: 10px;
+    height: 30px;
+  }
+
+.basemaps .title {
+  position: relative;
+  z-index: 3;
+  background-color: #5cb85c;
+}
+
+
+.fourquare-search .title {
+  background-color: #337AB7;
+}
+
+.fourquare-search .body {
+  position: relative;
+  z-index: 3;
+}
+
+
+/*
+  -----------------------------------------------------------------------
+  Places popup description
+  -----------------------------------------------------------------------
+
+*/
+.venue {
+  font-family: Roboto, Arial;
+  font-size: 12px;
+}
+
+  .venue .panel {
+    margin-bottom: 0;
+    min-height: 100px;
+  }
+
+  .venue .title {
+    overflow: hidden;
+    /* white-space: nowrap; */
+    text-overflow: ellipsis;
+    font-weight: 500;
+    font-size: 16px;
+    color: black;
+  }
+
+  .venue button.addTour, .venue a.addTour {
+    border: none;
+    outline: none !important;
+    background: none;
+    width: 100%;
+    height: 100%;
+    font-size: 1.5rem !important;
+    text-align: center;
+    white-space: initial;
+    color: #337ab7 !important;
+    text-decoration: none !important;
+  }
+
+    .venue button.addTour > i {
+      font-size: 1.8em;
+      width: 24px;
+    }
+
+
+
+/*
+  -----------------------------------------------------------------------
+  Info Widget 
+  -----------------------------------------------------------------------
+*/
+
+
+
+.info-widget {
+  position: absolute;
+  top: 20px;
+  right: -450px;
+  width: 450px;
+  /*animation-name: close-right;
+  animation-duration: 1s;*/
+  padding: 5px;
+  min-height: 200px;
+}
+
+.tour-info {
+  position: absolute;
+  top: 20px;
+  left: -450px;
+  width: 450px;
+  animation-name: close-big-left;
+  animation-duration: 1s;
+  padding: 5px;
+  min-height: 200px;
+}
+
+  .info-widget div.title,
+  .tour-info div.title {
+    height: 30px;
+    text-align: left;
+    padding-left: 10px;
+    background-color: #337AB7;
+    color: white;
+    line-height: 30px;
+    margin: -4px;
+    margin-bottom: 4px;
+    font-weight: bold;
+    font-family: inherit;
+  }
+
+  .tour-info button.leaf,
+  .info-widget button.leaf {
+    position: absolute;
+    z-index: 1;
+    border-radius: 0;
+    box-shadow: 1px 1px 2px #333;
+    width: 42px;
+  }
+
+.info-widget button.leaf {
+  top: 20px;
+  left: -42px;
+}
+
+.tour-info button.leaf {
+  top: 80px;
+  right: -42px;
+}
+
+.info-widget.open {
+  right: 20px;
+  /*animation-name: open-right;
+  animation-duration: 1s;*/
+}
+
+.tour-info.open {
+  left: 20px;
+  animation-name: open-big-left;
+  animation-duration: 1s;
+}
+
+.info-widget .background, .tour-info .background {
+  position: absolute;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #2A349C;
+  box-shadow: 1px 1px 5px #333;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.info-widget .body, .tour-info .body {
+  position: relative;
+  z-index: 3;
+  height: 100%;
+  max-height: 100%;
+  /* overflow-y: scroll; */
+}
+
+.info-widget .photos img {
+  max-height: 400px;
+  /* max-height:calc(100% - 150px); */
+  /* overflow-x:initial; */
+  /* overflow-y:scroll; */
+  /* height: calc(100% - 150px) !important; */
+}
+
+.info-widget .photos .img {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  height: 400px;
+  width: 100%;
+}
+
+aside {
+  height: 100vh;
+  overflow-y: scroll;
+}
