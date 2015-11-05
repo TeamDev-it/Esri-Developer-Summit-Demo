@@ -4,10 +4,24 @@
           auto-resize="true"
           on-map-ready="mapReady"
           on-extent-change="extentChange"
+          credentials="myCredentials"
           on-click="mapClick">
 
-  <search target="search">
-  </search>
+  <search target="search"></search>
+  <directions id="maproute"
+              target="route"
+              show-activate-button="false"
+              show-clear-button="false"
+              show-optimal-route-option="false"
+              show-travel-modes-option="false"
+              show-traffic-option="false"
+              show-miles-kilometers-option="false"
+              show-return-to-start-option="false"
+              show-reverse-stops-button="false"
+              show-print-page="false"
+              show-segment-highlight="false"
+              show-segment-popup="false"
+              ></directions>
 
   <!-- bus stops -->
   <!--<feature-layer layer-id="bus" url="http://atlasmaps.esri.com/arcgis/rest/services/Esri/Transit_Access/MapServer/1"
@@ -36,7 +50,8 @@
       </simple-fill-symbol>
     </circle>
     <poly-line json="route" deep-watch="true">
-      <simple-line-symbol symbol-color="#FF6C00" symbol-style="STYLE_DASHDOT" symbol-width="3"></simple-line-symbol>
+      <simple-line-symbol symbol-color="#337ab7" symbol-style="STYLE_DASHDOT" symbol-width="5">
+      </simple-line-symbol>
     </poly-line>
     <point ng-repeat="v in route.paths[0]" latitude="v[1]" longitude="v[0]">
       <simple-marker-symbol symbol-style="STYLE_CIRCLE" color="#007CFF" size="15">
@@ -73,7 +88,7 @@
               <i class="material-icons">library_books</i>
               Website
             </a>
-          </div> 
+          </div>
         </div>
       </div>
     </info-window>
@@ -85,8 +100,7 @@
 <div id="search"></div>
 
 <div class="tour-steps" ng-if="tour.length > 0">
-  <div class="step" ng-repeat="t in tour track by $index" ng-click="selectStep(tour[$index])"
-      >
+  <div class="step" ng-repeat="t in tour track by $index" ng-click="selectStep(tour[$index])">
     <i class="material-icons">directions_walk</i>
   </div>
 </div>

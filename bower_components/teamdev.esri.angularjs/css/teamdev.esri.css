@@ -1,8 +1,7 @@
-* {
+﻿* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* color: #007CFF; */
 }
 
 
@@ -20,8 +19,4 @@
   max-width: initial;
   max-height: initial;
   height: auto;
-}
-
-path[stroke="rgb(0, 255, 255)"]{
-  stroke:none;
 }

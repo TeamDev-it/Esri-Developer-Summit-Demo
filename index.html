@@ -21,8 +21,8 @@
   <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 
   <script src="bower_components/teamdev.esri.angularjs/js/teamdev.esri.js"></script>
-  <script src="fourSquareService.js"></script>
-
+  <script src="js/fourSquareService.js"></script>
+  <script src="myCredentials.js"></script>
 </head>
 <body ng-app="myApp" ng-controller="myController" ng-init="basemap='topo'">
   <div class="container-fluid full-height ">
@@ -31,16 +31,20 @@
            ng-include="'map.html'">
 
       </div>
-      <ng-include src="'basemap_widget.html'"></ng-include>
-      <ng-include src="'foursquare_widget.html'"></ng-include>
-      <ng-include src="'info_widget.html'"></ng-include>
-      <ng-include src="'my_tour.html'"></ng-include>
+      <ng-include src="'html_widgets/basemap_widget.html'"></ng-include>
+      <ng-include src="'html_widgets/foursquare_widget.html'"></ng-include>
+      <ng-include src="'html_widgets/info_widget.html'"></ng-include>
+      <ng-include src="'html_widgets/my_tour.html'"></ng-include>
+      <ng-include src="'html_widgets/routing.html'"></ng-include>
     </div>
   </div>
   <script>
     angular.module("myApp", ["teamdev.esri", "4square", "ui.bootstrap", "ngAnimate"])
       .controller("myController", function ($scope, esriRegistry, $http, venuesService, $filter, $timeout) {
-
+        try{
+          $scope.myCredentials = _cred;
+        }catch(e){}
+        
         $scope.tour = [];
         $scope.venues = [];
         $scope.categories = []
@@ -91,6 +95,8 @@
           $scope.addTour = function (p) {
             $scope.tour.push(p);
             $scope.route.paths[0].push([p.location.lng, p.location.lat]);
+            
+            esriRegistry.get("maproute").addStop([p.location.lng, p.location.lat]);
           };
 
           $scope.selectStep = function (p, hideDetails) {
@@ -103,9 +109,16 @@
             require(["esri/geometry/Point"], function (Point) {
               map.centerAndZoom(new Point(p.location.lng, p.location.lat), 14);
             });
+            $scope.showCredentials();
           }
 
         } tourTools()
+
+        $scope.showCredentials = function () {
+          require(["esri/IdentityManager"], function (im) {
+            console.log(JSON.stringify(im.credentials));
+          });
+        }
 
       })
       .constant("FSquareAppId", "PUKOPHZWV0TFKHHQP3DRP15WSEGJJV1CG04NCLEMEWGW5X3F")

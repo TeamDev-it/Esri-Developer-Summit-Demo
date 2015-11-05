@@ -156,12 +156,18 @@ angular.module("teamdev.esri", [])
         if (scope.showLogo) options.logo = scope.showLogo;
         if (scope.showAttribution) options.showAttribution = scope.showAttribution;
 
+
         if (scope.credentials) {
+          if (scope.credentials instanceof Array)
+            for(c in scope.credentials)
+              esriIm.registerToken(scope.credentials[c]);
+            else
           esriIm.registerToken(scope.credentials);
         }
 
         if (scope.disableScrollZoom)
           options.smartNavigation = false;
+
 
         if (scope.hasBeenDestroyed) {
           prepared.reject();
@@ -723,9 +729,9 @@ angular.module("teamdev.esri", [])
         });
       };
       this.remove = function (g) {
-         $scope.isObjectReady.then(function () {
-        $scope.this_layer.remove(g);
-         });
+        $scope.isObjectReady.then(function () {
+          $scope.this_layer.remove(g);
+        });
       };
       this.setInfoWindow = function (t, c) {
         $scope.isObjectReady.then(function () {
@@ -874,6 +880,212 @@ angular.module("teamdev.esri", [])
   };
 })
 
+.directive("draw", function ($q, esriRegistry) {
+  return {
+    restrict: "E",
+    require: "^esriMap",
+    scope: {
+      id: "@",
+      onDrawEnd: "&",
+      onDrawComplete: "&",
+      onActivate: "&",
+      onDeactivate: "&",
+    },
+    controller: function ($scope) {
+      this.activateTool = function (type) {
+        $scope.isObjectReady.then(function () {
+          if ($scope.current_tool === type) {
+            $scope.draw_tool.deactivate();
+            if ($scope.onDeactivate()) $scope.onDeactivate()($scope.draw_tool);
+            $scope.current_tool = null;
+          }
+          else {
+            $scope.draw_tool.activate(esri.toolbars.Draw[type]);
+            if ($scope.onActivate()) $scope.onActivate()($scope.draw_tool, type);
+            $scope.current_tool = type;
+          }
+        });
+      };
+    },
+    link: {
+      pre: function (scope, element, attr, parent) {
+
+      },
+      post: function (scope, element, attr, parent) {
+        var ready = $q.defer();
+        scope.isObjectReady = ready.promise;
+        require(["esri/toolbars/draw", "esri/toolbars/edit"], function (Draw, Edit) {
+          parent.getMap(function (m) {
+            scope.draw_tool = new Draw(m);
+            scope.edit_tool = new Edit(m);
+            ready.resolve();
+
+            scope.draw_tool.on("draw-end", function (evt) {
+              scope.draw_tool.deactivate();
+              if (scope.onDrawEnd()) scope.onDrawEnd()(evt, scope.draw_tool);
+            });
+
+            scope.draw_tool.on("draw-complete", function (evt) {
+              scope.draw_tool.deactivate();
+              if (scope.onDrawComplete()) scope.onDrawComplete()(evt, scope.draw_tool);
+            });
+
+            if (scope.id)
+              esriRegistry.set(scope.id, { edit: scope.edit_tool, draw: scope.draw_tool });
+          });
+        });
+
+        scope.$on("$destroy", function () {
+          scope.isObjectReady.then(function () {
+            if (scope.id) esriRegistry.remove(scope.id);
+          });
+        });
+      }
+    }
+  };
+})
+
+.directive("drawingTool", function ($q) {
+  return {
+    restrict: "A",
+    require: ["^draw"],
+    link: function (scope, element, attr, parents) {
+      if (attr.drawingTool && parent) {
+        element.on("click", function () {
+          parents[0].activateTool(attr.drawingTool);
+        });
+      }
+    }
+  }
+})
+
+/// ---------------------------------------------------------------------------------
+/// Tools
+/// ---------------------------------------------------------------------------------
+
+.directive("search", function ($q, esriRegistry) {
+  return {
+    restrict: "E",
+    require: "^esriMap",
+    scope: {
+      id: "@",
+      target: "@"
+    },
+    link: {
+      pre: function (scope, element, attrs, esriMap) {
+        var ready = $q.defer();
+        scope.isObjectReady = ready.promise;
+
+        require(["esri/dijit/Search"], function (Search) {
+          esriMap.getMap(function (m) {
+
+            scope.this_tool = new Search({ map: m }, scope.target);
+            scope.this_tool.startup();
+
+            if (scope.id) {
+              scope.this_tool._id = scope.id;
+              esriRegistry.set(scope.id, scope.this_tool);
+            }
+            ready.resolve();
+          });
+          scope.$on("$destroy", function () {
+            scope.isObjectReady.then(function () {
+              if (scope.id) esriRegistry.remove(scope.id);
+              scope.this_tool.destroy();
+            });
+          });
+        });
+      }
+    }
+  };
+})
+
+.directive("directions", function ($q, esriRegistry) {
+  return {
+    restrict: "E",
+    require: "^esriMap",
+    scope: {
+      id: "@",
+      target: "@",
+      travelModesServiceUrl: "@",
+      routeTaskUrl: "@",
+
+      showActivateButton: "@",
+      showClearButton: "@",
+      showMilesKilometersOption: "@",
+      showOptimalRouteOption: "@",
+      showPrintPage: "@",
+      showReturnToStartOption: "@",
+      showReverseStopsButton: "@",
+      showSegmentHighlight: "@",
+      showSegmentPopup: "@",
+      showTrafficOption: "@",
+      showTravelModesOption: "@",
+
+      onLoad: "&",
+      onDirectionsFinish: "&",
+      onDirectionsClear: "&",
+      onDirectionsStart: "&",
+      onMapClickActive: "&",
+      onSegmentHighlight: "&",
+      onSegmentSelect: "&",
+
+    },
+    link: {
+      pre: function (scope, element, attrs, esriMap) {
+        var ready = $q.defer();
+        scope.isObjectReady = ready.promise;
+
+        require(["esri/urlUtils", "esri/dijit/Directions"], function (urlUtils, Directions) {
+          esriMap.getMap(function (m) {
+
+            var options = {
+              map: m,
+            };
+
+            if (scope.travelModesServiceUrl) options.travelModesServiceUrl = scope.travelModesServiceUrl;
+            if (scope.routeTaskUrl) options.routeTaskUrl = scope.routeTaskUrl;
+            if (scope.showActivateButton) options.showActivateButton = scope.showActivateButton === "true";
+            if (scope.showClearButton) options.showClearButton = scope.showClearButton === "true";
+            if (scope.showMilesKilometersOption) options.showMilesKilometersOption = scope.showMilesKilometersOption === "true";
+            if (scope.showOptimalRouteOption) options.showOptimalRouteOption = scope.showOptimalRouteOption === "true";
+            if (scope.showPrintPage) options.showPrintPage = scope.showPrintPage === "true";
+            if (scope.showReturnToStartOption) options.showReturnToStartOption = scope.showReturnToStartOption === "true";
+            if (scope.showReverseStopsButton) options.showReverseStopsButton = scope.showReverseStopsButton === "true";
+            if (scope.showSegmentHighlight) options.showSegmentHighlight = scope.showSegmentHighlight === "true";
+            if (scope.showSegmentPopup) options.showSegmentPopup = scope.showSegmentPopup === "true";
+            if (scope.showTrafficOption) options.showTrafficOption = scope.showTrafficOption === "true";
+            if (scope.showTravelModesOption) options.showTravelModesOption = scope.showTravelModesOption === "true";
+
+            scope.this_tool = new Directions(options, scope.target);
+            scope.this_tool.startup();
+
+            if (scope.id) {
+              scope.this_tool._id = scope.id;
+              esriRegistry.set(scope.id, scope.this_tool);
+            }
+            ready.resolve();
+
+            if (scope.onLoad()) scope.this_tool.on("load", function () { scope.onLoad()(scope.this_tool); });
+            if (scope.onDirectionsFinish()) scope.this_tool.on("directions-finish", function (e) { scope.onDirectionsFinish()(e, scope.this_tool); });
+            if (scope.onDirectionsClear()) scope.this_tool.on("directions-clear", function () { scope.onDirectionsClear()(scope.this_tool); });
+            if (scope.onDirectionsStart()) scope.this_tool.on("directions-start", function () { scope.onDirectionsStart()(scope.this_tool); });
+            if (scope.onMapClickActive()) scope.this_tool.on("map-click-active", function (e) { scope.onMapClickActive()(e, scope.this_tool); });
+            if (scope.onSegmentHighlight()) scope.this_tool.on("segment-highlight", function (e) { scope.onSegmentHighlight()(e, scope.this_tool); });
+            if (scope.onSegmentSelect()) scope.this_tool.on("segment-select", function (e) { scope.onSegmentSelect()(e, scope.this_tool); });
+
+          });
+          scope.$on("$destroy", function () {
+            scope.isObjectReady.then(function () {
+              if (scope.id) esriRegistry.remove(scope.id);
+              scope.this_tool.destroy();
+            });
+          });
+        });
+      }
+    }
+  };
+})
 /// ---------------------------------------------------------------------------------
 /// Geometry definitions
 /// ---------------------------------------------------------------------------------
@@ -919,8 +1131,8 @@ angular.module("teamdev.esri", [])
         scope.$watch('json', function (newVal, oldVal) {
           if (scope.isObjectReady.$$state.status > 0)
             scope.isObjectReady.then(function () {
-                if(layer)
-              layer.remove(scope.graphic);
+              if (layer)
+                layer.remove(scope.graphic);
               create();
             });
         }, scope.deepWatch === "true");
@@ -1114,43 +1326,6 @@ angular.module("teamdev.esri", [])
           $scope.graphic.draw();
         });
       };
-    }
-  };
-})
-
-.directive("search", function ($q, esriRegistry) {
-  return {
-    restrict: "E",
-    require: "^esriMap",
-    scope: {
-      id: "@",
-      target: "@"
-    },
-    link: {
-      pre: function (scope, element, attrs, esriMap) {
-        var ready = $q.defer();
-        scope.isObjectReady = ready.promise;
-
-        require(["esri/dijit/Search"], function (Search) {
-          esriMap.getMap(function (m) {
-
-            scope.this_layer = new Search({ map: m }, scope.target);
-            scope.this_layer.startup();
-
-            if (scope.id) {
-              scope.this_layer._layer_id = scope.id;
-              esriRegistry.set(scope.id, scope.this_layer);
-            }
-            ready.resolve();
-          });
-          scope.$on("$destroy", function () {
-            scope.isObjectReady.then(function () {
-              if (scope.id) esriRegistry.remove(scope.id);
-              scope.this_layer.destroy();
-            });
-          });
-        });
-      }
     }
   };
 })

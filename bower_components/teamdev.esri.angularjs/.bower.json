@@ -27,11 +27,11 @@
   "dependencies": {
     "angular": "*"
   },
-  "_release": "002962a1a5",
+  "_release": "7f2f4973ff",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "002962a1a52b75696b5f298f60afbec6be218c25"
+    "commit": "7f2f4973ffede9649aaa0d5d816ab5e81bb3ffba"
   },
   "_source": "git://github.com/TeamDev-it/teamdev-esri-angularjs.git",
   "_target": "*",

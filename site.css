@@ -382,7 +382,7 @@ path[stroke="rgb(0, 255, 255)"] {
   min-height: 200px;
 }
 
-.tour-info {
+.tour-info, .route-info {
   position: absolute;
   top: 20px;
   left: -450px;
@@ -394,10 +394,9 @@ path[stroke="rgb(0, 255, 255)"] {
 }
 
   .info-widget div.title,
-  .tour-info div.title {
-    height: 30px;
-    text-align: left;
-    padding-left: 10px;
+  .tour-info div.title,
+  .route-info div.title {
+    height: 30px;    
     background-color: #337AB7;
     color: white;
     line-height: 30px;
@@ -407,14 +406,26 @@ path[stroke="rgb(0, 255, 255)"] {
     font-family: inherit;
   }
 
-  .tour-info button.leaf,
-  .info-widget button.leaf {
-    position: absolute;
-    z-index: 1;
-    border-radius: 0;
-    box-shadow: 1px 1px 2px #333;
-    width: 42px;
-  }
+.info-widget div.title {
+  padding-left: 10px;
+  text-align: left;
+}
+
+.tour-info div.title,
+.route-info div.title {
+  padding-right: 10px;
+  text-align: right;
+}
+
+.tour-info button.leaf,
+.info-widget button.leaf,
+.route-info button.leaf {
+  position: absolute;
+  z-index: 1;
+  border-radius: 0;
+  box-shadow: 1px 1px 2px #333;
+  width: 42px;
+}
 
 .info-widget button.leaf {
   top: 20px;
@@ -426,19 +437,27 @@ path[stroke="rgb(0, 255, 255)"] {
   right: -42px;
 }
 
+.route-info button.leaf {
+  top: 140px;
+  right: -42px;
+}
+
 .info-widget.open {
   right: 20px;
   /*animation-name: open-right;
   animation-duration: 1s;*/
 }
 
+.route-info.open,
 .tour-info.open {
   left: 20px;
   animation-name: open-big-left;
   animation-duration: 1s;
 }
 
-.info-widget .background, .tour-info .background {
+.info-widget .background,
+.route-info .background,
+.tour-info .background {
   position: absolute;
   background-color: rgb(255, 255, 255);
   border: 1px solid #2A349C;
@@ -450,17 +469,21 @@ path[stroke="rgb(0, 255, 255)"] {
   height: 100%;
 }
 
-.info-widget .body, .tour-info .body {
+.info-widget .body,
+.tour-info .body,
+.route-info .body {
   position: relative;
   z-index: 3;
   height: 100%;
 }
 
-.tour-info .body {
+.tour-info .body,
+.route-info .body {
   max-height: 80vh;
   overflow: hidden;
 }
 
+  .route-info .body > div:nth-child(2),
   .tour-info .body > div:nth-child(2) {
     max-height: calc(80vh - 30px);
     overflow-y: auto;
