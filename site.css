@@ -70,12 +70,6 @@ body {
   z-index: 30 !important;
 }
 
-
-
-path[stroke="rgb(0, 255, 255)"] {
-  stroke: none;
-}
-
 .esriPopup .titlePane {
   visibility: hidden;
 }
@@ -396,7 +390,7 @@ path[stroke="rgb(0, 255, 255)"] {
   .info-widget div.title,
   .tour-info div.title,
   .route-info div.title {
-    height: 30px;    
+    height: 30px;
     background-color: #337AB7;
     color: white;
     line-height: 30px;
@@ -509,3 +503,6 @@ aside {
   height: 100vh;
   overflow-y: scroll;
 }
+
+
+
